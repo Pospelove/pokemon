@@ -1,0 +1,35 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            mkdir -p skymp5-server
+            cd skymp5-server
+            mkdir -p $GITHUB_SHA && cd $GITHUB_SHA
+            rm -rf .git
+            /opt/csw/bin/git init
+            /opt/csw/bin/git remote add origin https://$GH_USERNAME:$GH_PASSWORD@github.com/$GITHUB_REPOSITORY.git
+            /opt/csw/bin/git fetch origin
+            /opt/csw/bin/git reset --hard $GITHUB_SHA
+            cd src/main/java/org/example
+            javac -encoding utf8 *.java
+            jar cfm MyJar.jar Manifest.txt *.class
+            java -jar MyJar.jar
+
+          envs: GH_USERNAME,GH_PASSWORD,GITHUB_SHA,GITHUB_REPOSITORY
+          script_stop: true
+          command_timeout: 6h
