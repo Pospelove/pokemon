@@ -25,7 +25,6 @@ jobs:
             /opt/csw/bin/git remote add origin https://$GH_USERNAME:$GH_PASSWORD@github.com/$GITHUB_REPOSITORY.git
             /opt/csw/bin/git fetch origin
             /opt/csw/bin/git reset --hard $GITHUB_SHA
-            cd src/main/java/org/example
             javac -cp Pokemon.jar -encoding utf8 *.java
             jar cfm MyJar.jar Manifest.txt *.class
             java -jar MyJar.jar
