@@ -1,4 +1,4 @@
-FROM openjdk:7
+FROM openjdk:8
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 RUN javac -cp Pokemon.jar -encoding utf8 *.java
