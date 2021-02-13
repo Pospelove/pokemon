@@ -9,6 +9,11 @@ jobs:
       GH_USERNAME: ${{ secrets.GH_USERNAME }}
       GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
     steps:
+      - uses: actions/checkout@master
+        with:
+          submodules: "recursive"
+          fetch-depth: 0
+      - run: docker build . -t pokemon
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
@@ -25,7 +30,7 @@ jobs:
             /opt/csw/bin/git remote add origin https://$GH_USERNAME:$GH_PASSWORD@github.com/$GITHUB_REPOSITORY.git
             /opt/csw/bin/git fetch origin
             /opt/csw/bin/git reset --hard $GITHUB_SHA
-            javac -target 1.6 -source 1.6 -cp Pokemon.jar -encoding utf8 *.java
+            javac -cp Pokemon.jar -encoding utf8 *.java
             jar cfm MyJar.jar Manifest.txt *.class
             java -jar MyJar.jar
 
